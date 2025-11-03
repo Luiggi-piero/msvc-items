@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.luiggi.libs.msvc.commons.entities.Product;
 import com.luiggi.springcloud.msvc.items.clients.ProductFeignClient;
 import com.luiggi.springcloud.msvc.items.models.Item;
-import com.luiggi.springcloud.msvc.items.models.Product;
 
 import feign.FeignException;
 
@@ -47,6 +47,21 @@ public class ItemServiceFeign implements ItemService{
         } catch (FeignException e) {
             return Optional.empty(); // si es nulo regresa un optianl vacio
         }
+    }
+
+    @Override
+    public Product save(Product product) {
+        return client.create(product);
+    }
+
+    @Override
+    public Product update(Product product, Long id) {
+        return client.update(product, id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        client.delete(id);
     }
 
 }

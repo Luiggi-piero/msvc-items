@@ -13,8 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import com.luiggi.libs.msvc.commons.entities.Product;
 import com.luiggi.springcloud.msvc.items.models.Item;
-import com.luiggi.springcloud.msvc.items.models.Product;
 
 //@Primary
 @Service
@@ -46,7 +46,7 @@ public class ItemServiceWebClient implements ItemService {
        Map<String, Long> params = new HashMap<>();
        params.put("id", id);
 
-       try {
+    //    try {
            return  Optional.of(
                 client.build()
                 .get()
@@ -60,10 +60,50 @@ public class ItemServiceWebClient implements ItemService {
                 })
                 .block()
             );
-       } catch (WebClientResponseException e) {
-        return Optional.empty();
-       }
+    //    } catch (WebClientResponseException e) {
+    //     return Optional.empty();
+    //    }
 
+    }
+
+    @Override
+    public Product save(Product product) {
+        return client.build()
+        .post()
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(product)
+        .retrieve() // envía la petición al servidor y prepara la respuesta para ser leída.
+        .bodyToMono(Product.class)
+        .block(); // se usa para esperar de manera síncrona el resultado de un Mono o Flux, detiene el flujo reactivo y bloquea el hilo actual hasta obtener el valor (o un error).
+    }
+
+    @Override
+    public Product update(Product product, Long id) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("id", id);
+
+        return client.build()
+                .put()
+                .uri("/{id}", params)
+                .accept(MediaType.APPLICATION_JSON) // por defecto acepta json
+                .contentType(MediaType.APPLICATION_JSON) // contentido de la solicitud
+                .bodyValue(product)
+                .retrieve()
+                .bodyToMono(Product.class)
+                .block();
+    }
+
+    @Override
+    public void delete(Long id) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("id", id);
+
+        client.build()
+            .delete()
+            .uri("/{id}", params)
+            .retrieve()
+            .bodyToMono(Void.class)
+            .block();
     }
 
 }

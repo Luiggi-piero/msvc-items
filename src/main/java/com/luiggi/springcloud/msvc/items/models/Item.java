@@ -1,5 +1,6 @@
 package com.luiggi.springcloud.msvc.items.models;
 
+import com.luiggi.libs.msvc.commons.entities.Product;
 
 public class Item {
 
