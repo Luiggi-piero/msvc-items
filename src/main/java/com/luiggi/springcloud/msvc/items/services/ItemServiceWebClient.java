@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import org.springframework.context.annotation.Primary;
+// import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.Builder;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+// import org.springframework.web.reactive.function.client.WebClient.Builder;
+// import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.luiggi.libs.msvc.commons.entities.Product;
 import com.luiggi.springcloud.msvc.items.models.Item;
@@ -20,15 +20,15 @@ import com.luiggi.springcloud.msvc.items.models.Item;
 @Service
 public class ItemServiceWebClient implements ItemService {
 
-    private final WebClient.Builder client;
+    private final WebClient client;
 
-    public ItemServiceWebClient(Builder client) {
+    public ItemServiceWebClient(WebClient client) {
         this.client = client;
     }
 
     @Override
     public List<Item> findAll() {
-        return this.client.build()
+        return this.client
         .get()
         .accept(MediaType.APPLICATION_JSON) // aceptamos el tipo de contenido json
         .retrieve() // recive la respuesta, es una coleccion de objetos(lista de productos en webflux/ son fluxs)
@@ -48,7 +48,7 @@ public class ItemServiceWebClient implements ItemService {
 
     //    try {
            return  Optional.of(
-                client.build()
+                client
                 .get()
                 .uri("/{id}", params)
                 .accept(MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ public class ItemServiceWebClient implements ItemService {
 
     @Override
     public Product save(Product product) {
-        return client.build()
+        return client
         .post()
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(product)
@@ -82,7 +82,7 @@ public class ItemServiceWebClient implements ItemService {
         Map<String, Long> params = new HashMap<>();
         params.put("id", id);
 
-        return client.build()
+        return client
                 .put()
                 .uri("/{id}", params)
                 .accept(MediaType.APPLICATION_JSON) // por defecto acepta json
@@ -98,8 +98,7 @@ public class ItemServiceWebClient implements ItemService {
         Map<String, Long> params = new HashMap<>();
         params.put("id", id);
 
-        client.build()
-            .delete()
+        client.delete()
             .uri("/{id}", params)
             .retrieve()
             .bodyToMono(Void.class)
