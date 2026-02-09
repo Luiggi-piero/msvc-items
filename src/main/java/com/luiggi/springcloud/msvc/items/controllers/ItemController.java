@@ -60,15 +60,16 @@ public class ItemController {
     @Value("${configuracion.texto}") 
     private String text;
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     // @Qualifier("nombre_del_bean/nombre_del_servicio_que_sera_inyectado_implementado") : el nombre debe tener la primera letra en minuscula
     // podemos tomar ItemServiceWebClient o ItemServiceFeign, en esta caso elegimos ItemServiceWebClient
     public ItemController(@Qualifier("itemServiceFeign") ItemService service,
-        CircuitBreakerFactory cBreakerFactory) {
+        CircuitBreakerFactory cBreakerFactory,
+        Environment env) {
         this.cBreakerFactory = cBreakerFactory;
         this.service = service;
+        this.env = env;
     }
 
     @GetMapping("/fetch-configs")
